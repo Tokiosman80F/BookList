@@ -59,7 +59,7 @@ class UI
         },3000);
     }
 
-        static deleteFromBook(target)
+    static deleteFromBook(target)
     {
         if(target.hasAttribute('href'))
         {
@@ -70,6 +70,51 @@ class UI
     }
 }
 
+
+//local storage class
+class Store{
+    static getBooks()
+    {
+        let books;
+        if(localStorage.getItem('books')===null)
+        {
+            books=[];
+        }
+        else
+        {
+            books=JSON.parse(localStorage.getItem('books'));
+        }
+        return books;
+    }
+    static addBook(book)
+    {
+        let books=Store.getBooks();
+        books.push(book)
+        localStorage.setItem('books',JSON.stringify(books))
+    }
+
+    static displayBooks()
+    {
+        let books = Store.getBooks();
+        books.forEach(book => {
+            UI.addToBookList(book)
+        });
+
+    }
+
+    static removeBook(isbn)
+    {
+        let books = Store.getBooks();
+
+        books.forEach((book,index)=>{
+            if(book.isbn === isbn )
+            {
+                books.splice(index,1);
+            }
+        })
+        localStorage.setItem('books',JSON.stringify(books))
+    }
+}
 
 // Event Listener
 
@@ -122,47 +167,3 @@ function removeBook(e)
     e.preventDefault();
 }
 
-//local storage class
-class Store{
-    static getBooks()
-    {
-        let books;
-        if(localStorage.getItem('books')===null)
-        {
-            books=[];
-        }
-        else
-        {
-            books=JSON.parse(localStorage.getItem('books'));
-        }
-        return books;
-    }
-    static addToBook(book)
-    {
-        let books=Store.getBooks();
-        books.push(books)
-        localStorage.setItem('books',JSON.stringify(books))
-    }
-
-    static displayBooks()
-    {
-        let books = Store.getBooks();
-        books.array.forEach(book => {
-            UI.addToBookList(book)
-        });
-
-    }
-
-    static removeBook(isbn)
-    {
-        let books = Store.getBooks();
-
-        books.forEach(book,index)=>{
-            if(book.isbn===isbn)
-            {
-                books.splice(index,1)
-            }
-        }
-        localStorage.setItem('books',JSON.stringify(books))
-    }
-}
