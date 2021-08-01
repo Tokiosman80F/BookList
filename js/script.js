@@ -1,6 +1,8 @@
 // get ul element
 
 let form=document.querySelector('#book-form');
+let booklist=document.querySelector('#book-list')
+
 
 
 //book class
@@ -17,11 +19,8 @@ class Book
 //UI class
 class UI
 {
-    contructor()
-    {
-
-    }
-    addToBookList(book)
+    
+    static addToBookList(book)
     {
     
         let list=document.querySelector('#book-list');
@@ -38,12 +37,35 @@ class UI
         console.log(row);
     }
     
-    clearFields()
+    static clearFields()
     {
         document.querySelector('#title').value='';
         document.querySelector('#author').value='';
         document.querySelector('#isbn').value='';
         
+    }
+    static showAlert(message,className)
+    {
+        let div=document.createElement('div');
+        div.className=`alert ${className}`;
+        div.appendChild(document.createTextNode(message));
+        let container=document.querySelector('.container');
+        let form=document.querySelector('#book-form');
+        container.insertBefore(div,form);
+
+        setTimeout(function()
+        {
+            document.querySelector('.alert').remove();
+        },3000);
+    }
+
+        static deleteFromBook(target)
+    {
+        if(target.hasAttribute('href'))
+        {
+            target.parentElement.parentElement.remove();
+            UI.showAlert('Book Remove!','success');
+        }
     }
 }
 
@@ -51,6 +73,7 @@ class UI
 // Event Listener
 
 form.addEventListener('submit',newBook);
+booklist.addEventListener('click',removeBook);
 
 
 
@@ -62,9 +85,11 @@ function newBook(e)
     let author=document.querySelector('#author').value;
     let isbn=document.querySelector('#isbn').value;
 
+    //let ui=new UI();//calling ui class inside new ui variable 
+        
     if(title===''|| author===''|| isbn==='' )
     {
-        alert('Fleid are empty..Please fillup the form! ')
+            UI.showAlert("Please fill all the feild","error")
     }
 
     else
@@ -72,13 +97,23 @@ function newBook(e)
 
         let book=new Book(title,author,isbn);//This book
     
-        let ui=new UI();//calling ui class inside new ui variable 
-        ui.addToBookList(book) ;///here the book variable is called .... calling the function addToBookList
+        UI.addToBookList(book) ;///here the book variable is called .... calling the function addToBookList
 
-        ui.clearFields()
+        UI.clearFields();
+
+        UI.showAlert("Book added","success");
     }
 
     
 
+    e.preventDefault();
+}
+
+
+function removeBook(e)
+{
+    
+        UI.deleteFromBook(e.target);
+       
     e.preventDefault();
 }
